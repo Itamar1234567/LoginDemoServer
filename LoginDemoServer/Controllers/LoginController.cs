@@ -35,8 +35,9 @@ namespace LoginDemoServer.Controllers
 
                 //Get model user class from DB with matching email. 
              
-                Models.Users modelsUser = context.GetUSerFromDB(loginDto.Email);
-                
+                Models.User modelsUser = context.GetUSerFromDB(loginDto.Email);
+                ICollection<Grade> grades = new List<Grade>();
+
                 //Check if user exist for this email and if password match, if not return Access Denied (Error 403) 
                 if (modelsUser == null || modelsUser.Password != loginDto.Password) 
                 {
@@ -46,7 +47,7 @@ namespace LoginDemoServer.Controllers
                 //Login suceed! now mark login in session memory!
                 HttpContext.Session.SetString("loggedInUser", modelsUser.Email);
 
-                return Ok(new DTO.UserDTO(modelsUser));
+                return Ok(new DTO.UserDTO(modelsUser, grades));
             }
             catch (Exception ex)
             {
@@ -73,15 +74,21 @@ namespace LoginDemoServer.Controllers
 
 
                 //user is logged in - lets check who is the user
-                Models.Users modelsUser = context.GetUSerFromDB(userEmail);
+                Models.User modelsUser = context.GetUSerFromDB(userEmail);
+                ICollection<Grade> grades = new List<Grade>();
              
-                return Ok(new DTO.Users(modelsUser));
+                return Ok(new DTO.UserDTO(modelsUser,grades));
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
             }
 
+        }
+
+        public Models.User GetUserGrade()
+        {
+            return null;
         }
 
 
